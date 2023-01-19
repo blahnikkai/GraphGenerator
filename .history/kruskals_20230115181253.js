@@ -1,0 +1,4 @@
+
+function kruskals(graph) {
+    
+}

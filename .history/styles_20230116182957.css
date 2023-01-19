@@ -1,0 +1,28 @@
+* {
+    box-sizing: border-box; 
+}
+
+:root {
+    
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+#controls {
+    width: 100%;
+    background-color: #a0a0a0;
+    height: 50%;
+}
+
+canvas {
+    margin: auto;
+    width: inherit;
+    max-height: inherit;
+    aspect-ratio: 1 / 1;
+    background-color: black;
+}

@@ -1,0 +1,25 @@
+* {
+    box-sizing: border-box; 
+}
+
+:root {
+    
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#controls {
+    width: 100%;
+    background-color: #f0f0f0;
+    height: 100px;
+}
+
+canvas {
+    height: 500px;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: black;
+}
