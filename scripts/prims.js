@@ -1,5 +1,3 @@
-import {DisjointSet} from "./disjoint_set.js";
-
 function add_sorted(list, edge) {
     let i = 0;
     while(i < list.length && list[i].w >= edge.w)

@@ -1,17 +1,10 @@
 import {Graph} from "./graph.js";
-import {Graphics} from "./graphics.js";
-import {kruskals} from "./kruskals.js";
-import {prims} from "./prims.js";
-
-const DELAY = 500;
 
 let canvas;
-let graphics;
 let graph;
 
-function do_kruskals() {
-    let [mst, considered] = kruskals(graph.edges.slice());
-    graphics.draw_process(graph, considered, DELAY);
+export function euclid_dist(x1, y1, x2, y2) {
+    return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 }
 
 function do_prims() {
@@ -23,22 +16,23 @@ function canvas_click(event) {
     const rect = canvas.getBoundingClientRect();
     const x = (event.clientX - rect.left) / (rect.right - rect.left) * canvas.width;
     const y = (event.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height;
-    graph.add_vertex(x, y);
-    graphics.draw_circle(x, y);
+    graph.click(x, y);
 }
 
 function main() {
-    graph = new Graph();
     canvas = document.querySelector("canvas");
-    graphics = new Graphics(canvas);
+    graph = new Graph(canvas);
 
     canvas.addEventListener("click", (event) => canvas_click(event));
 
     let kruskals_button = document.getElementById("kruskals_button");
-    kruskals_button.addEventListener("click", () => do_kruskals());
+    kruskals_button.addEventListener("click", () => graph.do_kruskals());
 
     let prims_button = document.getElementById("prims_button");
-    prims_button.addEventListener("click", () => do_prims());
+    prims_button.addEventListener("click", () => graph.do_prims());
+
+    let ch_button = document.getElementById("ch_button");
+    ch_button.addEventListener("click", () => graph.do_convex_hull());
 }
 
 main();

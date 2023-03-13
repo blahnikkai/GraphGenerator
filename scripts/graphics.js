@@ -1,5 +1,5 @@
-const RADIUS = 5;
-const LINE_WIDTH = 2;
+export const RADIUS = 10;
+const LINE_WIDTH = 4;
 
 export class Graphics {
     constructor(canvas) {
@@ -7,11 +7,14 @@ export class Graphics {
         this.ctx = canvas.getContext("2d");;
         this.ctx.fillStyle = "white";
         this.ctx.strokeStyle = "white";
+        this.ctx.font = "24px sans-serif";
         this.ctx.lineWidth = LINE_WIDTH;
-        this.timeoutID = undefined;
+        this.timeout_id = undefined;
+        this.edges_drawn = false;
     }
 
     clear() {
+        this.edges = false;
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
@@ -22,6 +25,7 @@ export class Graphics {
 
     draw_vertex(vertex) {
         this.draw_circle(vertex.x, vertex.y);
+        this.ctx.fillText(vertex.n, vertex.x + 2 * RADIUS, vertex.y);
     }
 
     draw_edges(edges, color) {
@@ -48,11 +52,12 @@ export class Graphics {
     }
 
     async draw_process(graph, considered, delay) {
-        clearTimeout(this.timeoutID);
+        clearTimeout(this.timeout_id);
         this.clear();
         this.draw_vertices(graph.vertices);
         let i = 0;
         let drawn_edges = [];
+        this.edges_drawn = true;
         const step = () => {
             if(i >= considered.length)
                 return;
@@ -67,11 +72,31 @@ export class Graphics {
             else
                 this.draw_edge(edge, "blue");
             ++i;
-            return new Promise((resolve) => this.timeoutID = setTimeout(() => resolve(step()), delay));
+            return new Promise((resolve) => this.timeout_id = setTimeout(() => resolve(step()), delay));
         }
-        await new Promise((resolve) => this.timeoutID = setTimeout(() => resolve(step()), delay));
+        await new Promise((resolve) => this.timeout_id = setTimeout(() => resolve(step()), delay));
         this.clear();
         this.draw_vertices(graph.vertices);
         this.draw_edges(drawn_edges, "white");
+    }
+
+    async draw_states(graph, states, delay) {
+        clearTimeout(this.timeout_id);
+        this.clear();
+        this.draw_vertices(graph.vertices);
+        this.edges_drawn = true;
+        let drawn_edges = [];
+        let i = 0;
+        const step = () => {
+            if(i >= states.length)
+                return;
+            this.clear();
+            this.draw_vertices(graph.vertices);
+            for(let [edge, clr] of states[i])
+                this.draw_edge(edge, clr);
+            ++i;
+            return new Promise((resolve) => this.timeout_id = setTimeout(() => resolve(step()), delay));
+        }
+        await new Promise((resolve) => this.timeout_id = setTimeout(() => resolve(step()), delay));
     }
 }
