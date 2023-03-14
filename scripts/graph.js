@@ -16,73 +16,78 @@ export class Graph {
         this.graphics = new Graphics(canvas);
     }
 
+    clear() {
+        this.vertices = [];
+        this.graphics.clear();
+    }
+
     click(x, y) {
-        if(this.graphics.edges_drawn) {
-            clearTimeout(this.graphics.timeout_id);
-            this.graphics.clear();
-            this.graphics.draw_vertices(this.vertices);
-        }
-        for(const vertex of this.vertices) {
-            if(euclid_dist(x, y, vertex.x, vertex.y) <= RADIUS) {
-                this.remove_vertex(vertex);
-                this.graphics.clear();
-                this.graphics.draw_vertices(this.vertices);
+        this.graphics.clear();
+        this.graphics.draw_vertices(this.vertices);
+        for(let i = 0; i < this.vertices.length; ++i) {
+            if(euclid_dist(x, y, this.vertices[i].x, this.vertices[i].y) <= RADIUS) {
+                this.remove_vertex(i);
                 return;
             }
         }
         this.add_vertex(x, y);
-        this.graphics.draw_circle(x, y);
     }
 
     add_vertex(x, y) {
         const new_vertex = new Vertex(this.vertices.length, x, y);
-        this.adj_list.push([]);
-        for(let old_vertex of this.vertices) {
-            const dist = euclid_dist(x, y, old_vertex.x, old_vertex.y);
-            const new_edge = new Edge(old_vertex, new_vertex, dist);
-            const reversed_edge = new Edge(new_vertex, old_vertex, dist);
-            this.edges.push(new_edge);
-            this.adj_list[old_vertex.n].push(new_edge);
-            this.adj_list[new_vertex.n].push(reversed_edge);
-        }
         this.vertices.push(new_vertex);
         this.graphics.draw_vertex(new_vertex);
     }
 
-    remove_vertex(rm_vertex) {
-        const ind = this.vertices.indexOf(rm_vertex);
-        for(let v = rm_vertex.n + 1; v < this.vertices.length; ++v) {
-            --this.vertices[v].n;
+    remove_vertex(rm_ind) {
+        for(let i = this.vertices[rm_ind].n + 1; i < this.vertices.length; ++i)
+                    --this.vertices[i].n;
+        this.vertices.splice(rm_ind, 1);
+        this.graphics.clear();
+        this.graphics.draw_vertices(this.vertices);
+    }
+
+    make_edges() {
+        this.edges = [];
+        this.adj_list = [];
+        for(let i = 0; i < this.vertices.length; ++i)
+            this.adj_list.push([]);
+        for(let i = 0; i < this.vertices.length; ++i) {
+            for(let j = i + 1; j < this.vertices.length; ++j) {
+                const dist = euclid_dist(this.vertices[i].x, this.vertices[i].y, this.vertices[j].x, this.vertices[j].y);
+                const new_edge = new Edge(this.vertices[i], this.vertices[j], dist);
+                const reverse_edge = new Edge(this.vertices[j], this.vertices[i], dist);
+                this.edges.push(new_edge);
+                this.adj_list[this.vertices[i].n].push(new_edge);
+                this.adj_list[this.vertices[j].n].push(reverse_edge);
+            }
         }
-        this.vertices.splice(ind, 1);
-        this.adj_list[rm_vertex.n] = [];
-        // for(let lst of this.adj_list) {
-        //     for(let i = 0; i < lst.length; ++i) {
-        //         if(lst[i].v2 === rm_vertex) {
-        //             lst.splice(i, 1);
-        //         }
-        //     }
-        // }
-        for(let i = this.edges.length - 1; i >= 0; --i) {
-            if(this.edges[i].v1 === rm_vertex || this.edges[i].v2 === rm_vertex)
-                this.edges.splice(i, 1);
-        }
+    }
+
+    toggle_draw_nums() {
+        this.graphics.draw_nums = !this.graphics.draw_nums;
         this.graphics.clear();
         this.graphics.draw_vertices(this.vertices);
     }
 
     do_kruskals() {
+        this.make_edges();
         let [mst, considered] = kruskals(this.edges.slice());
         this.graphics.draw_process(this, considered, DELAY);
     }
 
     do_prims() {
-        let [mst, considered] = prims(this.adj_list);
-        this.graphics.draw_process(this, considered, DELAY);
+        if(this.vertices.length >= 2) {
+            this.make_edges();
+            const [mst, considered] = prims(this.adj_list);
+            this.graphics.draw_process(this, considered, DELAY);
+        }
     }
 
     do_convex_hull() {
-        let states = convex_hull(this.vertices.slice());
-        this.graphics.draw_states(this, states, DELAY);
+        if(this.vertices.length >= 2) {
+            const states = convex_hull(this.vertices.slice());
+            this.graphics.draw_states(this, states, DELAY);
+        }
     }
 }

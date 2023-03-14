@@ -10,11 +10,11 @@ export class Graphics {
         this.ctx.font = "24px sans-serif";
         this.ctx.lineWidth = LINE_WIDTH;
         this.timeout_id = undefined;
-        this.edges_drawn = false;
+        this.draw_nums = false;
     }
 
     clear() {
-        this.edges = false;
+        clearTimeout(this.timeout_id);
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
@@ -25,7 +25,8 @@ export class Graphics {
 
     draw_vertex(vertex) {
         this.draw_circle(vertex.x, vertex.y);
-        this.ctx.fillText(vertex.n, vertex.x + 2 * RADIUS, vertex.y);
+        if(this.draw_nums)
+            this.ctx.fillText(vertex.n, vertex.x + 2 * RADIUS, vertex.y);
     }
 
     draw_edges(edges, color) {
@@ -52,12 +53,10 @@ export class Graphics {
     }
 
     async draw_process(graph, considered, delay) {
-        clearTimeout(this.timeout_id);
         this.clear();
         this.draw_vertices(graph.vertices);
         let i = 0;
         let drawn_edges = [];
-        this.edges_drawn = true;
         const step = () => {
             if(i >= considered.length)
                 return;
@@ -81,11 +80,8 @@ export class Graphics {
     }
 
     async draw_states(graph, states, delay) {
-        clearTimeout(this.timeout_id);
         this.clear();
         this.draw_vertices(graph.vertices);
-        this.edges_drawn = true;
-        let drawn_edges = [];
         let i = 0;
         const step = () => {
             if(i >= states.length)

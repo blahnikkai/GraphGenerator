@@ -1,18 +1,10 @@
 import {Graph} from "./graph.js";
 
-let canvas;
-let graph;
-
 export function euclid_dist(x1, y1, x2, y2) {
     return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 }
 
-function do_prims() {
-    let [mst, considered] = prims(graph.adj_list);
-    graphics.draw_process(graph, considered, DELAY);
-}
-
-function canvas_click(event) {
+function canvas_click(event, canvas, graph) {
     const rect = canvas.getBoundingClientRect();
     const x = (event.clientX - rect.left) / (rect.right - rect.left) * canvas.width;
     const y = (event.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height;
@@ -20,19 +12,25 @@ function canvas_click(event) {
 }
 
 function main() {
-    canvas = document.querySelector("canvas");
-    graph = new Graph(canvas);
+    const canvas = document.querySelector("canvas");
+    const graph = new Graph(canvas);
 
-    canvas.addEventListener("click", (event) => canvas_click(event));
+    canvas.addEventListener("click", (event) => canvas_click(event, canvas, graph));
 
-    let kruskals_button = document.getElementById("kruskals_button");
-    kruskals_button.addEventListener("click", () => graph.do_kruskals());
+    const kruskals_btn = document.getElementById("kruskals_btn");
+    kruskals_btn.addEventListener("click", () => graph.do_kruskals());
 
-    let prims_button = document.getElementById("prims_button");
-    prims_button.addEventListener("click", () => graph.do_prims());
+    const prims_btn = document.getElementById("prims_btn");
+    prims_btn.addEventListener("click", () => graph.do_prims());
 
-    let ch_button = document.getElementById("ch_button");
-    ch_button.addEventListener("click", () => graph.do_convex_hull());
+    const ch_btn = document.getElementById("ch_btn");
+    ch_btn.addEventListener("click", () => graph.do_convex_hull());
+
+    const clear_btn = document.getElementById("clear_btn");
+    clear_btn.addEventListener("click", () => graph.clear());
+
+    const draw_nums_chk = document.getElementById("draw_nums_chk");
+    draw_nums_chk.addEventListener("click", () => graph.toggle_draw_nums());
 }
 
 main();

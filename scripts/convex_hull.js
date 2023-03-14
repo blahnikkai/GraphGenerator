@@ -16,7 +16,6 @@ export function convex_hull(vertices) {
             mn_ind = i;
         }
     }
-    console.log(mn_ind);
     let bot_left = vertices[mn_ind];
     vertices.splice(mn_ind, 1);
     vertices.sort((v1, v2) => {
@@ -28,7 +27,6 @@ export function convex_hull(vertices) {
     let states = [];
     let cur_state = [];
     cur_state.push([new Edge(hull[0], hull[1]), 'white']);
-    states.push(cur_state.slice());
     cur_state.push([new Edge(hull[1], hull[2]), 'white']);
     states.push(cur_state.slice());
     let i = 1;
