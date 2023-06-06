@@ -90,4 +90,9 @@ export class Graph {
             this.graphics.draw_states(this, states, DELAY)
         }
     }
+
+    do_tsp() {
+        const edges = tsp(this.vertices.slice())
+        this.graphics.draw_states(this, [edges], DELAY);
+    }
 }
