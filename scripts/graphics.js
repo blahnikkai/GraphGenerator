@@ -80,6 +80,7 @@ export class Graphics {
     }
 
     async draw_states(graph, states, delay) {
+        console.log(states);
         this.clear();
         this.draw_vertices(graph.vertices);
         let i = 0;

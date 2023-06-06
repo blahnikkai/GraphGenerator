@@ -5,6 +5,7 @@ import {Graphics, RADIUS} from "./graphics.js";
 import {kruskals} from "./kruskals.js";
 import {prims} from "./prims.js";
 import {convex_hull} from "./convex_hull.js";
+import {tsp} from "./tsp.js";
 
 const DELAY = 500;
 
@@ -89,5 +90,10 @@ export class Graph {
             const states = convex_hull(this.vertices.slice());
             this.graphics.draw_states(this, states, DELAY);
         }
+    }
+
+    do_tsp() {
+        const edges = tsp(this.vertices.slice())
+        this.graphics.draw_states(this, [edges], DELAY);
     }
 }

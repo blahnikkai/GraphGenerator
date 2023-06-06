@@ -25,6 +25,9 @@ function main() {
 
     const ch_btn = document.getElementById("ch_btn");
     ch_btn.addEventListener("click", () => graph.do_convex_hull());
+    
+    const tsp_btn = document.getElementById("tsp_btn");
+    tsp_btn.addEventListener("click", () => graph.do_tsp());
 
     const clear_btn = document.getElementById("clear_btn");
     clear_btn.addEventListener("click", () => graph.clear());
