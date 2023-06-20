@@ -5,6 +5,7 @@ import {Graphics, RADIUS} from './graphics.js'
 import {kruskals} from './kruskals.js'
 import {prims} from './prims.js'
 import {convex_hull} from './convex_hull.js'
+import {tsp} from './tsp.js'
 
 const DELAY = 500
 
